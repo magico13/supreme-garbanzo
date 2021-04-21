@@ -33,16 +33,30 @@ void setup() {
     analogWrite(PWM_MOTOR_A, 0);
     analogWrite(PWM_MOTOR_B, 0);
 
-    analogWrite(MOTOR_A_1, LOW);
-    analogWrite(MOTOR_A_2, HIGH);
+    digitalWrite(MOTOR_A_1, LOW);
+    digitalWrite(MOTOR_A_2, HIGH);
 
-    analogWrite(MOTOR_B_1, LOW);
-    analogWrite(MOTOR_B_2, HIGH);
+    digitalWrite(MOTOR_B_1, LOW);
+    digitalWrite(MOTOR_B_2, HIGH);
 }
 
 // the loop function runs over and over again forever
 void loop() {
     //Serial.println( hc.dist() );
-    analogWrite(PWM_MOTOR_A, 10);
-    analogWrite(PWM_MOTOR_B, 10);
+    float dist = hc.dist();
+    if (dist < 10)
+    {
+        analogWrite(PWM_MOTOR_A, 0);
+        analogWrite(PWM_MOTOR_B, 0);
+    }
+    else if (dist < 40)
+    {
+        analogWrite(PWM_MOTOR_A, 64);
+        analogWrite(PWM_MOTOR_B, 64);
+    }
+    else
+    {
+        analogWrite(PWM_MOTOR_A, 128);
+        analogWrite(PWM_MOTOR_B, 128);
+    }
 }
