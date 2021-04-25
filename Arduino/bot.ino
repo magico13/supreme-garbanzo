@@ -43,16 +43,7 @@ void motors_backward()
     digitalWrite(MOTOR_B_2, LOW);
 }
 
-void motors_left() //TODO: Confirm
-{
-    digitalWrite(MOTOR_A_1, LOW);
-    digitalWrite(MOTOR_A_2, HIGH);
-
-    digitalWrite(MOTOR_B_1, HIGH);
-    digitalWrite(MOTOR_B_2, LOW);
-}
-
-void motors_right() //TODO: Confirm
+void motors_left()
 {
     digitalWrite(MOTOR_A_1, HIGH);
     digitalWrite(MOTOR_A_2, LOW);
@@ -61,14 +52,33 @@ void motors_right() //TODO: Confirm
     digitalWrite(MOTOR_B_2, HIGH);
 }
 
+void motors_right()
+{
+    digitalWrite(MOTOR_A_1, LOW);
+    digitalWrite(MOTOR_A_2, HIGH);
+
+    digitalWrite(MOTOR_B_1, HIGH);
+    digitalWrite(MOTOR_B_2, LOW);
+}
+
 // speed is between 0 and 100 percent
-void motor_speed(int speed)
+void motor_speed(byte speed)
 {
     speed = constrain(speed, 0, 100);
     speed *= 2.55f; //scale 0 to 255, drop remainder to int
 
     analogWrite(PWM_MOTOR_A, speed);
     analogWrite(PWM_MOTOR_B, speed);
+}
+
+void turn(bool right, unsigned long time, byte speed)
+{
+    if (right) motors_right();
+    else motors_left();
+
+    motor_speed(speed);
+    delay(time);
+    motors_forward();
 }
 
 // the setup function runs once when you press reset or power the board
@@ -89,6 +99,8 @@ void setup()
     // set initial motor conditions
     motors_forward();
     motor_speed(0);
+
+    delay(5000);
 }
 
 // the loop function runs over and over again forever
@@ -97,13 +109,10 @@ void loop()
     //Serial.println( hc.dist() );
     float dist = hc.dist();
     if (dist < 15)
-    { // stop, spin around to the left for 0.1s, start going again
+    { // spin around to the left for 0.5s, start going again
         motor_speed(0);
-        motors_left();
-        motor_speed(50);
-        delay(100);
-        motor_speed(0);
-        motors_forward();
+        delay(1000);
+        turn(false, 500, 50);
     }
     else if (dist < 50)
     { // slow down to 25%
